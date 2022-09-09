@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   Button,
   Platform,
+  ScrollView,
 } from "react-native";
 import { TextInput, Dimensions } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import DistanceSlider from "./DistanceSlider";
 
@@ -45,7 +46,7 @@ export default function Home({ navigation }) {
   } else if (location) {
     text = JSON.stringify(location);
   }
-  useEffect(() => {}, [location]);
+
   const [winner, setWinner] = useState(null);
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -107,21 +108,34 @@ export default function Home({ navigation }) {
       <View style={styles.header}>
         <Text style={styles.title}>Random Restaurant</Text>
       </View>
-      <View style={styles.space}>
-        <MapView
-          style={styles.map}
-          region={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        />
-        <DistanceSlider setMiles={setMiles} miles={miles}></DistanceSlider>
-        <Text style={styles.text}>Category (Optional) {text}</Text>
-        <TextInput style={styles.textInput} placeholder="eg. Fast Food" />
-      </View>
-
+      <ScrollView
+        style={styles.scrollView}
+        automaticallyAdjustKeyboardInsets={true}
+      >
+        <View style={styles.space}>
+          <MapView
+            style={styles.map}
+            region={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+              latitudeDelta: miles / 30,
+              longitudeDelta: miles / 30,
+            }}
+            showsUserLocation={true}
+          >
+            <Circle
+              center={{
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }}
+              radius={miles * 1609}
+            ></Circle>
+          </MapView>
+          <DistanceSlider setMiles={setMiles} miles={miles}></DistanceSlider>
+          <Text style={styles.text}>Category (Optional)</Text>
+          <TextInput style={styles.textInput} placeholder="eg. Fast Food" />
+        </View>
+      </ScrollView>
       <TouchableOpacity style={styles.button} onPress={getData}>
         <Text style={styles.buttonText}>Press Here</Text>
       </TouchableOpacity>
@@ -131,8 +145,11 @@ export default function Home({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   map: {
-    width: 300,
+    width: 380,
     height: 300,
   },
   textInput: {
@@ -151,7 +168,7 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "#fffffe",
     flex: 0.2,
   },
   container: {

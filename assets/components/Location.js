@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 const Location = ({ navigation, route }) => {
   return (
     <View>
-      <Text>{route.params}</Text>
+      <Text>{route.params.name}</Text>
     </View>
   );
 };
