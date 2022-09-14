@@ -20,8 +20,7 @@ export default function Home({ navigation }) {
     longitude: 0,
   });
   const [errorMsg, setErrorMsg] = useState(null);
-  const [region, setRegion] = useState(null);
-
+  const [keyword, setkeyword] = useState("");
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -64,7 +63,8 @@ export default function Home({ navigation }) {
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.261270%2C-120.647470&radius=" +
         miles * 1609 +
-        "&keyword=fast%2Cfood&type=restaurant&opennow&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI"
+        "&type=restaurant&opennow&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI&keyword=" +
+        keyword
     )
       .then((response) => response.json())
       .then((data) => {
@@ -72,7 +72,7 @@ export default function Home({ navigation }) {
         token = data.next_page_token;
         rants.push(data.results);
       });
-    await sleep(1300);
+    await sleep(100);
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
         token +
@@ -84,9 +84,9 @@ export default function Home({ navigation }) {
         token = data.next_page_token;
         rants.push(data.results);
       });
-    await sleep(1300);
+    await sleep(100);
     fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.261270%2C-120.647470&radius=1000&pagetoken=" +
+      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
         token +
         "&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI"
     )
@@ -133,7 +133,11 @@ export default function Home({ navigation }) {
           </MapView>
           <DistanceSlider setMiles={setMiles} miles={miles}></DistanceSlider>
           <Text style={styles.text}>Category (Optional)</Text>
-          <TextInput style={styles.textInput} placeholder="eg. Fast Food" />
+          <TextInput
+            style={styles.textInput}
+            placeholder="eg. Fast Food"
+            onChangeText={setkeyword}
+          />
         </View>
       </ScrollView>
       <TouchableOpacity style={styles.button} onPress={getData}>
