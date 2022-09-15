@@ -47,13 +47,22 @@ export default function Home({ navigation }) {
   }
 
   const [winner, setWinner] = useState(null);
+
+  function toURL(string) {
+    let result = string.replace(" ", "+");
+    return result;
+  }
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
   const chooseRestaurant = (list) => {
-    console.log(list);
+    if (list.length == 0) {
+      getData();
+      return;
+    }
     let winner = Math.floor(Math.random() * list.length);
     setWinner(list[winner]);
+    console.log(list[winner]);
     navigation.navigate("Bruh", list[winner]);
   };
   async function getData() {
@@ -63,8 +72,8 @@ export default function Home({ navigation }) {
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.261270%2C-120.647470&radius=" +
         miles * 1609 +
-        "&type=restaurant&opennow&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI&keyword=" +
-        keyword
+        "&type=restaurant&opennow&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0&keyword=" +
+        toURL(keyword)
     )
       .then((response) => response.json())
       .then((data) => {
@@ -76,7 +85,7 @@ export default function Home({ navigation }) {
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
         token +
-        "&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI"
+        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
     )
       .then((response) => response.json())
       .then((data) => {
@@ -88,7 +97,7 @@ export default function Home({ navigation }) {
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
         token +
-        "&key=AIzaSyBJnsCbZiXOBioa21hIP_CzpMTDlMhEYoI"
+        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
     )
       .then((response) => response.json())
       .then((data) => {
