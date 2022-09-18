@@ -21,6 +21,8 @@ export default function Home({ navigation }) {
   });
   const [errorMsg, setErrorMsg] = useState(null);
   const [keyword, setkeyword] = useState("");
+  const [page_token, setToken] = useState("");
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -55,15 +57,15 @@ export default function Home({ navigation }) {
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
-  const chooseRestaurant = (list) => {
+  const chooseRestaurant = (list, nexttoken) => {
     if (list.length == 0) {
       getData();
       return;
     }
     let winner = Math.floor(Math.random() * list.length);
     setWinner(list[winner]);
-    console.log(list[winner]);
-    navigation.navigate("Bruh", list[winner]);
+    console.log(page_token);
+    navigation.navigate("Bruh", { winner: list[winner], token: nexttoken });
   };
   async function getData() {
     var token;
@@ -77,37 +79,13 @@ export default function Home({ navigation }) {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         token = data.next_page_token;
+        //console.log(token);
+
         rants.push(data.results);
+        var merged = rants.flat(2); //uneccesary
+        chooseRestaurant(merged, token);
       });
-    await sleep(100);
-    fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
-        token +
-        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        token = data.next_page_token;
-        rants.push(data.results);
-      });
-    await sleep(100);
-    fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
-        token +
-        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        token = data.next_page_token;
-        rants.push(data.results);
-      });
-    await sleep(1000);
-    var merged = rants.flat(2);
-    chooseRestaurant(merged);
-    return;
   }
 
   const [miles, setMiles] = useState(10);
