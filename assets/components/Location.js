@@ -13,7 +13,7 @@ import WebLink from "./WebLink.js";
 import MapLink from "./MapLink.js";
 import PhoneLink from "./PhoneLink.js";
 const Location = ({ navigation, route }) => {
-  console.log(route);
+  //console.log(route.params.Rlist);
   const [hours, setHours] = useState(null);
   const [phone, setPhone] = useState(null);
   const [price, setPrice] = useState(null);
@@ -21,8 +21,9 @@ const Location = ({ navigation, route }) => {
   const [website, setWebsite] = useState(null);
   const [LatLng, setLatLng] = useState(null);
   const [winner, setWinner] = useState(route.params.winner);
-  const token = route.params.token;
-  //const [reloadCount]
+  const [token, setToken] = useState(route.params.token);
+  const [reloadCount, setReloadCount] = useState(0);
+  const [restPool, setRestPool] = useState(route.params.Rlist);
   function toGoogleDate(dayNum) {
     dayNum = dayNum - 1;
     if (dayNum < 0) {
@@ -35,7 +36,6 @@ const Location = ({ navigation, route }) => {
   }, [winner]);
 
   function getInfo() {
-    console.log(winner);
     fetch(
       "https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Copening_hours%2Cformatted_phone_number%2Cuser_ratings_total%2Curl%2Cprice_level%2Cwebsite&place_id=" +
         winner.place_id +
@@ -60,25 +60,36 @@ const Location = ({ navigation, route }) => {
       return;
     }
 
-    let win = Math.floor(Math.random() * 20);
-    console.log(list);
-    setWinner(list.results[win]);
+    let win = Math.floor(Math.random() * list.length);
+
+    setWinner(list[win]);
   };
   const searchAgain = () => {
-    console.log(token);
-    fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
-        token +
-        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data.status === "INVALID_REQUEST") {
-          return;
-        }
-        chooseRestaurant(data);
-      });
+    console.log(restPool);
+    if (token !== "" && token !== undefined) {
+      fetch(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
+          token +
+          "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.status === "INVALID_REQUEST") {
+            console.log("Invalid Request");
+            console.log(token);
+            setToken(data.next_page_token);
+            chooseRestaurant(restPool);
+            return;
+          }
+          console.log(data.results);
+          setToken(data.next_page_token);
+          setRestPool([...restPool, ...data.results]);
+          chooseRestaurant([...restPool, ...data.results]);
+        });
+    } else {
+      console.log("Searching Pool");
+      chooseRestaurant(restPool);
+    }
   };
   return (
     <View

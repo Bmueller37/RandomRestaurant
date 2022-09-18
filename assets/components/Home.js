@@ -64,8 +64,12 @@ export default function Home({ navigation }) {
     }
     let winner = Math.floor(Math.random() * list.length);
     setWinner(list[winner]);
-    console.log(page_token);
-    navigation.navigate("Bruh", { winner: list[winner], token: nexttoken });
+
+    navigation.navigate("Bruh", {
+      winner: list[winner],
+      token: nexttoken,
+      Rlist: list,
+    });
   };
   async function getData() {
     var token;
