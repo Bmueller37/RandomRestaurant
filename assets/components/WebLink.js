@@ -1,5 +1,14 @@
 import React, { useCallback } from "react";
-import { Alert, Button, Linking, StyleSheet, View, Text } from "react-native";
+import {
+  Alert,
+  Button,
+  Linking,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import { buttonStyle } from "../style/buttonStyle";
 
 const WebLink = ({ url }) => {
   const handlePress = useCallback(async () => {
@@ -12,9 +21,9 @@ const WebLink = ({ url }) => {
     }
   }, [url]);
   return (
-    <View>
-      <Button title="Website" onPress={handlePress} />
-    </View>
+    <TouchableOpacity style={buttonStyle.button} onPress={handlePress}>
+      <Text style={buttonStyle.buttonText}>Website</Text>
+    </TouchableOpacity>
   );
 };
 

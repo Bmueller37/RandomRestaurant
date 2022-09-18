@@ -12,6 +12,8 @@ import { Rating, AirbnbRating } from "react-native-ratings";
 import WebLink from "./WebLink.js";
 import MapLink from "./MapLink.js";
 import PhoneLink from "./PhoneLink.js";
+import { buttonStyle } from "../style/buttonStyle.js";
+
 const Location = ({ navigation, route }) => {
   //console.log(route.params.Rlist);
   const [hours, setHours] = useState(null);
@@ -91,12 +93,23 @@ const Location = ({ navigation, route }) => {
       chooseRestaurant(restPool);
     }
   };
+  const computePrice = () => {
+    let result = "";
+    for (let i = 0; i < price; i++) {
+      result += "$";
+    }
+    return result;
+  };
   return (
     <View
-      style={{ backgroundColor: "#fffffe", flex: 1, alignItems: "flex-start" }}
+      style={{
+        backgroundColor: "#fffffe",
+        flex: 1,
+        alignItems: "flex-start",
+      }}
     >
       <Image
-        style={{ width: "100%", height: 300 }}
+        style={styles.picture}
         source={{
           uri:
             "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=" +
@@ -104,35 +117,82 @@ const Location = ({ navigation, route }) => {
             "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0",
         }}
       />
-      <Text
-        style={{
-          fontSize: 45,
-          paddingTop: 10,
-          paddingLeft: 5,
-          paddingBottom: 5,
-        }}
-      >
+      <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
         {winner.name}
       </Text>
+      <View style={styles.starContainer}>
+        <Rating
+          type="star"
+          ratingCount={5}
+          imageSize={20}
+          fractions={2}
+          startingValue={winner.rating}
+          readonly={true}
+          style={styles.stars}
+        />
+        <Text style={styles.divider}>⬤</Text>
 
-      <Rating
-        type="star"
-        ratingCount={5}
-        imageSize={25}
-        fractions={2}
-        startingValue={winner.rating}
-        readonly={true}
-        style={{ paddingLeft: 10 }}
-      />
-      <Text>{hours}</Text>
-      <Text>Price Level: {price}</Text>
-      <Text>Number Ratings: {numRatings}</Text>
-      <WebLink url={website}></WebLink>
-      <MapLink name={winner.name} LatLng={LatLng}></MapLink>
-      <PhoneLink phoneNumber={phone}></PhoneLink>
-      <Button onPress={searchAgain} title="Retry"></Button>
+        <Text style={styles.ratings}>{numRatings} user ratings</Text>
+        <Text style={styles.divider}>⬤</Text>
+        <Text style={styles.priceLevel}>{`${computePrice()}`}</Text>
+      </View>
+
+      <Text style={styles.hourText}>{hours}</Text>
+      <View style={styles.buttonContainer}>
+        <WebLink style={{ color: "red" }} url={website}></WebLink>
+        <MapLink name={winner.name} LatLng={LatLng}></MapLink>
+        <PhoneLink phoneNumber={phone}></PhoneLink>
+        <TouchableOpacity style={buttonStyle.button} onPress={searchAgain}>
+          <Text style={buttonStyle.buttonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 export default Location;
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    position: "absolute",
+    top: 580,
+  },
+  hourText: { fontSize: 16, color: "#2b2c34" },
+  priceLevel: {
+    paddingTop: 3,
+    fontSize: 14,
+    paddingLeft: 2,
+    color: "#2b2c34",
+  },
+  divider: {
+    color: "#2b2c34",
+    fontSize: 5,
+    paddingTop: 8,
+    paddingHorizontal: 4,
+  },
+  ratings: {
+    paddingTop: 3,
+    fontSize: 14,
+    paddingLeft: 2,
+    color: "#2b2c34",
+  },
+  starContainer: {
+    flexDirection: "row",
+  },
+  picture: {
+    width: "100%",
+    height: 300,
+  },
+  title: {
+    fontSize: 45,
+    paddingTop: 10,
+    paddingLeft: 5,
+    color: "#2b2c34",
+  },
+  stars: {
+    paddingLeft: 5,
+  },
+});
