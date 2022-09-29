@@ -78,7 +78,7 @@ export default function Home({ navigation }) {
     fetch(
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=35.261270%2C-120.647470&radius=" +
         miles * 1609 +
-        "&type=restaurant&opennow&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0&keyword=" +
+        "&type=restaurant&opennow&key=REMOVED&keyword=" +
         toURL(keyword)
     )
       .then((response) => response.json())

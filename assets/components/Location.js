@@ -41,7 +41,7 @@ const Location = ({ navigation, route }) => {
     fetch(
       "https://maps.googleapis.com/maps/api/place/details/json?fields=name%2Copening_hours%2Cformatted_phone_number%2Cuser_ratings_total%2Curl%2Cprice_level%2Cwebsite&place_id=" +
         winner.place_id +
-        "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
+        "&key=REMOVED"
     )
       .then((response) => response.json())
       .then((data) => {
@@ -72,7 +72,7 @@ const Location = ({ navigation, route }) => {
       fetch(
         "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" +
           token +
-          "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0"
+          "&key=REMOVED"
       )
         .then((response) => response.json())
         .then((data) => {
@@ -114,7 +114,7 @@ const Location = ({ navigation, route }) => {
           uri:
             "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=" +
             winner.photos[0].photo_reference +
-            "&key=AIzaSyD5Q6i_DnJ4onJzfJr95AiPK7_cjjnIhy0",
+            "&key=REMOVED",
         }}
       />
       <Text adjustsFontSizeToFit numberOfLines={1} style={styles.title}>
